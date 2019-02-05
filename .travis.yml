@@ -1,28 +1,22 @@
 sudo: required
-
-# language: node_js
-# node_js:
-#   - "iojs"
-
-services: 
+services:
   - docker
- 
+
 before_install:
-  - docker build -t okarimdev/client-test -f ./client/Dockerfile.dev ./client
+  - docker build -t okarimdev/react-test -f ./client/Dockerfile.dev ./client
 
-scripts:
-  - docker run okarimdev/client-test npm test -- --coverage
+script:
+  - docker run okarimdev/react-test npm test -- --coverage
 
-after_success:  ##Prod Image builds
-  - docker build -t okarimdev/prod-client ./client
-  - docker build -t okarimdev/prod-nginx ./nginx
-  - docker build -t okarimdev/prod-server ./server
-  - docker build -t okarimdev/prod-worker ./worker
-
-    ##Automate Docker hub login  
-  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin  
-
-  - docker push okarimdev/prod-client
-  - docker push okarimdev/prod-nginx
-  - docker push okarimdev/prod-server
-  - docker push okarimdev/prod-worker
+after_success:
+  - docker build -t okarimdev/multi-client ./client
+  - docker build -t okarimdev/multi-nginx ./nginx
+  - docker build -t okarimdev/multi-server ./server
+  - docker build -t okarimdev/multi-worker ./worker
+  # Log in to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Take those images and push them to docker hub
+  - docker push okarimdev/multi-client
+  - docker push okarimdev/multi-nginx
+  - docker push okarimdev/multi-server
+  - docker push okarimdev/multi-worker
