@@ -1,0 +1,23 @@
+sudo: required
+services: 
+  - docker
+ 
+before_install:
+  - docker build -t okarimdev/client-test -f ./client/Dockerfile.dev ./client
+
+scripts:
+  - docker run okarimdev/client-test npm test -- --coverage
+
+after_success:  ##Prod Image builds
+  - docker build -t okarimdev/prod-client ./client
+  - docker build -t okarimdev/prod-nginx ./nginx
+  - docker build -t okarimdev/prod-server ./server
+  - docker build -t okarimdev/prod-worker ./worker
+
+    ##Automate Docker hub login  
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin  
+
+  - docker push okarimdev/prod-client
+  - docker push okarimdev/prod-nginx
+  - docker push okarimdev/prod-server
+  - docker push okarimdev/prod-worker
