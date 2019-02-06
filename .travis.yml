@@ -20,3 +20,16 @@ after_success:
   - docker push okarimdev/multi-nginx
   - docker push okarimdev/multi-server
   - docker push okarimdev/multi-worker
+
+deploy:
+  provider: elasticbeanstalk
+  region: us-east-2
+  app: prod-starter
+  env: ProdStarter-env
+  bucket_name: elasticbeanstalk-us-east-2-286545301062
+  bucket_path: prod-starter
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key:
+    secure: $AWS_SECRET_KEY
