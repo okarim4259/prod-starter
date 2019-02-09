@@ -2,13 +2,13 @@ sudo: required
 services:
   - docker
 
-before_install:
-  - docker build -t okarimdev/ng-test -f ./client/Dockerfile.dev ./client
+#before_install:
+# - docker build -t okarimdev/ng-test -f ./client/Dockerfile.dev ./client
+
+#script:
+#- docker run okarimdev/ng-test npm build
 
 script:
-  - docker run okarimdev/ng-test npm build
-
-after_success:
   - docker build -t okarimdev/multi-client ./client
   - docker build -t okarimdev/multi-nginx ./nginx
   - docker build -t okarimdev/multi-server ./server
